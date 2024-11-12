@@ -25,8 +25,10 @@ public class Card {
         } else if (this.suit == 5) {
             if (this.rank == 2) {
                 name = "Wild Card";
+                return name;
             } else if (this.rank == 1) {
                 name = "+4";
+                return name;
             }
         }
         String[] rankNames = new String[]{"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "+2", "Skip", "Reverse"};
@@ -56,6 +58,10 @@ public class Card {
         return cardName;
     }
 
+    public void setSuit (int suit) {
+        this.suit = suit;
+    }
+
     @Override
     public String toString() {
         String var = this.getRankName();
@@ -72,7 +78,7 @@ public class Card {
             return false;
         } else {
             Card c = (Card) other;
-            return this.rank == c.rank || this.suit == c.suit || this.suit == 5;
+            return this.rank == c.rank || this.suit == c.suit || c.suit == 5;
         }
     }
 }

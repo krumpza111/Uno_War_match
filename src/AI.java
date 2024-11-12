@@ -5,9 +5,10 @@ public class AI {
 
     public Card getPlay (Hand hand, CardPile cardPile) {
         for (int i = 0; i < hand.getSize(); i++) {
-            if (cardPile.canPlay(hand.get(i))) {
-                hand.remove(hand.get(i));
-                return hand.get(i);
+            Card currentCard = hand.get(i);
+            if (currentCard != null && cardPile.canPlay(currentCard)) {
+                hand.remove(currentCard);
+                return currentCard;
             }
         }
         return null;

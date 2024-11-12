@@ -16,25 +16,39 @@ public class Deck {
         // initialize Wild cards
         for (int i = 0; i < 4; i++) {
             this.deck[index] = new Card(2, 5); // Wild cards
+            index++;
         }
         for (int i = 0; i< 2; i++) {
             this.deck[index] = new Card(1, 5); // +4 cards
+            index++;
         }
         this.shuffle();
     }
 
-    public Deck(CardPile cardPile) {
-        for (int i = 0; i < cardPile.getNumCards(); i++) {
-            this.deck[i] = cardPile.getDiscardedCards()[i];
+    public Deck(Card[] cards) {
+        int nullCount = 0;
+        for (int i = 0; i < cards.length; i++) {
+            if (cards[i] == null) {
+                nullCount++;
+            }
         }
-        this.totalCards = cardPile.getNumCards();
+        if (nullCount == 0) {
+            //System.out.println("no null values seeen");
+        }
+        this.deck = new Card[cards.length - nullCount];
+        for (int i = 0; i < (cards.length - nullCount); i++) {
+            if (cards[i] != null) {
+                this.deck[i] = cards[i];
+            }
+        }
+        this.totalCards = this.deck.length;
+        this.shuffle();
     }
 
     public void shuffle() {
-        System.out.println(this.deck.length);
-        for (int i = this.deck.length - 1; i >= 1; i--) {
-            Random rand = new Random();
-            int j = rand.nextInt(i);
+        Random rand = new Random();
+        for (int i = this.totalCards - 1; i > 0; i--) {
+            int j = rand.nextInt(i + 1);
             Card temp = this.deck[i];
             this.deck[i] = this.deck[j];
             this.deck[j] = temp;
@@ -42,14 +56,11 @@ public class Deck {
     }
 
     public Card draw() {
-        int temp = this.totalCards;
         if (this.isEmpty()) {
-            this.shuffle();
-            this.totalCards--;
-            return this.deck[temp];
+            return null;
         } else {
             this.totalCards--;
-            return this.deck[temp];
+            return this.deck[this.totalCards];
         }
     }
 
@@ -58,7 +69,7 @@ public class Deck {
     }
 
     public boolean isEmpty() {
-        return this.cardsRemaining() == 0;
+        return this.cardsRemaining() <= 0;
     }
 
     @Override

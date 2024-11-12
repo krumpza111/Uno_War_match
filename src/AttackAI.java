@@ -4,17 +4,25 @@ public class AttackAI extends AI{
     }
 
     public Card getPlay(Hand hand, CardPile cardPile) {
+        int bestIndex = -1;
         for (int i = 0; i < hand.getSize(); i++) {
-            if (hand.get(i) != null) {
-                if (cardPile.canPlay(hand.get(i))) {
-                    if (hand.get(i).getRankNum() == 10 || (hand.get(i).getSuitName() == "Wild" && hand.get(i).getRankNum() == 1)) {
-                        return hand.get(i);
-                    }
+            Card currentCard = hand.get(i);
+            if (currentCard != null && cardPile.canPlay(currentCard)) {
+                if (hand.get(i).getRankNum() == 10 || (currentCard.getSuitName().equals("Wild") && currentCard.getRankNum() == 1)) {
+                    hand.remove(currentCard);
+                    return currentCard;
+                } else {
+                    bestIndex = i;
                 }
             }
         }
         // No attack card found
-        return hand.get(0);
+        if (bestIndex >= 0) {
+            Card temp = hand.get(bestIndex);
+            hand.remove(bestIndex);
+            return temp;
+        }
+        return null;
     }
 
     public String toString() {

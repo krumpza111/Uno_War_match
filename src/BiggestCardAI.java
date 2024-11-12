@@ -17,7 +17,7 @@ public class BiggestCardAI extends AI{
         }
 
         if (biggest == null) {
-            System.out.println("Error no card found");
+            // No card found
             return null;
         } else {
             hand.remove(biggest);
