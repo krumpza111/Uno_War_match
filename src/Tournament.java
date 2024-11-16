@@ -1,3 +1,12 @@
+/**
+ * @author -- Kyle Rumpza
+ * @version -- 1.1
+ */
+
+/*
+This the main class for the UnoWarMatch project this initializes the AI players and runs 2-player matches with N playthroughs
+n -- Number of playthroughs/simulations to run
+ */
 public class Tournament {
     public Tournament () {
 
