@@ -1,6 +1,6 @@
 /**
  * @author -- Kyle Rumpza
- * @version -- 1.1
+ * @version -- 1.2
  */
 
 /*
@@ -23,5 +23,6 @@ public class Tournament {
         System.out.println("Random Card AI vs. Random Card AI winrate: " + (new UnoWarMatch(rand, rand)).playGame(n));
         System.out.println("Random Card AI vs. Biggest Card Ai windrate " + (new UnoWarMatch(rand, b)).playGame(n));
         System.out.println("Random Card AI vs. Attack Card AI winrate " + (new UnoWarMatch(rand, a)).playGame(n));
+        System.out.println("Random Card AI vs. MINIMAX AI winrate " + (new UnoWarMatch(rand, minimax)).playGame(n));
     }
 }

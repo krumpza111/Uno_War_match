@@ -9,7 +9,7 @@ public class Card {
      * @param suit -- An integer representing the suit or color of the card
      */
     public Card(int rank, int suit) {
-        if (rank >= 1 && rank <= 12 && suit > 0 && suit <= 5) {
+        if (rank >= 0 && rank <= 12 && suit > 0 && suit <= 5) {
             this.rank = rank;
             this.suit = suit;
         } else {
@@ -38,7 +38,7 @@ public class Card {
             System.out.println("This card is invalid");
         } else if (this.suit == 5) {
             // Wild card ranks
-            if (this.rank == 2) {
+            if (this.rank == 0) {
                 name = "Wild Card";
                 return name;
             } else if (this.rank == 1) {
@@ -47,10 +47,10 @@ public class Card {
             }
         }
         // Normal Ranked cards
-        String[] rankNames = new String[]{"Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "+2", "Skip", "Reverse"};
-        for (int i = 1; i <= rankNames.length; i++) {
+        String[] rankNames = new String[]{"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "+2", "Skip", "Reverse"};
+        for (int i = 0; i <= rankNames.length; i++) {
             if (this.rank == i) {
-                name = rankNames[i - 1];
+                name = rankNames[i];
             }
         }
         return name;

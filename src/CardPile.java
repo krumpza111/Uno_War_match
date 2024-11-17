@@ -4,7 +4,7 @@ import java.util.Random;
 public class CardPile {
     private Card topCard;
     private int tracker = 0; // tracks index placement in deck
-    private Card[] discardedCards = new Card[55]; // cards that exist underneath the top card, considered discarded
+    private Card[] discardedCards = new Card[108]; // cards that exist underneath the top card, considered discarded
 
     /**
      * Default card pile constructor, will just set the card pile to an empty array
@@ -28,7 +28,7 @@ public class CardPile {
      */
     public CardPile (Card topCard, int numCards) {
         this.topCard = topCard;
-        this.discardedCards = new Card[numCards - 1];
+        this.discardedCards = new Card[numCards];
     }
 
     /**
@@ -89,7 +89,7 @@ public class CardPile {
      */
     public void reshuffle() {
         Random rand = new Random();
-        for (int i = this.tracker; i > 0; i--) {
+        for (int i = this.tracker - 1; i > 0; i--) {
             int j = rand.nextInt(i + 1);
             Card temp = this.discardedCards[i];
             this.discardedCards[i] = this.discardedCards[j];
@@ -106,7 +106,7 @@ public class CardPile {
 
         int count = 0;
         // copies the cards into the temporary array
-        for (int i = 0; i < tracker; i++) {
+        for (int i = 0; i < tracker - 1; i++) {
             if (discardedCards[i] != null) { //only add if not null
                 activeDiscarded[count] = discardedCards[i];
                 count++;
@@ -115,7 +115,7 @@ public class CardPile {
 
         // updates the card pile's parameters
         this.tracker = 0;
-        this.discardedCards = new Card[55];
+        this.discardedCards = new Card[108];
         return activeDiscarded;
     }
 }

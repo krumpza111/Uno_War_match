@@ -27,11 +27,16 @@ public class UnoWarMatch {
             // Initializes conditions to start a Uno game
             Deck myDeck;
             myDeck = new Deck();
-            Hand hand1 = new Hand(myDeck, 5);
-            Hand hand2 = new Hand(myDeck, 5);
-            CardPile cardPile = new CardPile(myDeck.draw());
+            //System.out.println("Initialized Deck: " + myDeck);
 
-            // System.out.println("Top Card is: " + cardPile.getTopCard());
+            Hand hand1 = new Hand(myDeck, 7);
+            Hand hand2 = new Hand(myDeck, 7);
+            CardPile cardPile = new CardPile(myDeck.draw());
+            if (cardPile.getTopCard().getSuit() == 5) { // checking for wild drawn cards
+                Random rand = new Random();
+                int randSuit = rand.nextInt(1, 5);
+                cardPile.getTopCard().setSuit(randSuit);
+            }
 
             boolean ai1Turn = true;
             boolean playAgain = false;
@@ -40,7 +45,7 @@ public class UnoWarMatch {
                 // (FIX) A check to make sure that the hand sizes can't get larger than the total cards in the deck
                 int totalSize = hand1.getSize() + hand2.getSize();
                 if (totalSize > 54) {
-                    System.out.println("");
+                    //System.out.println("Exceded size");
                     if (hand1.getSize() > hand2.getSize()) {
                         wins2++;
                     } else {
@@ -67,12 +72,18 @@ public class UnoWarMatch {
                     Card [] temp = cardPile.getDiscardedCards();
                     myDeck = new Deck(temp);
                 }
+                // checking for wild drawn cards
+                if (cardPile.getTopCard().getSuit() == 5) {
+                    Random rand = new Random();
+                    int randSuit = rand.nextInt(1, 5);
+                    cardPile.getTopCard().setSuit(randSuit);
+                }
                 //System.out.println("Current Top Card: " + cardPile.getTopCard());
 
                 Card currCard = currentAI.getPlay(currentHand, cardPile); // Card that the AI chooses
                 if (cardPile.canPlay(currCard)) {
                     // Logic for special cards
-                    if (currCard.getSuitName() == "Wild") {
+                    if (currCard.getSuit() == 5) {
                         if (currCard.getRankNum() == 1) {
                             // The card is +4
                             for (int i = 0; i < 4; i++) {
@@ -110,7 +121,7 @@ public class UnoWarMatch {
 
                     cardPile.play(currCard); // plays the card to the card pile
 
-                    //System.out.println("Current play: " + currCard);
+                    // System.out.println("Current play: " + currCard);
                 } else {
                     // Else branch is there are no valid cards in the players hand. Player has to draw
                     // If the deck is empty then reshuffle the card pile and form a new deck from that
@@ -140,6 +151,6 @@ public class UnoWarMatch {
                 }
             }
         }
-        return (double) wins1 / (double) wins2;
+        return (double) wins1 / (double) (wins1 + wins2) * 100;
     }
 }

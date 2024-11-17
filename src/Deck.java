@@ -2,8 +2,8 @@ import java.util.Random;
 
 // A class representing a generic deck
 public class Deck {
-    private Card[] deck = new Card[55]; // An array of cards in the deck
-    private int totalCards = 54; // Number of cards in the deck #DEFINE
+    private Card[] deck = new Card[108]; // An array of cards in the deck
+    private int totalCards = 108; // Number of cards in the deck #DEFINE
 
     /**
      * Deck constructor
@@ -13,19 +13,21 @@ public class Deck {
         int index = 0;
         // Initialize normal cards
         for (int suit = 1; suit <= 4; suit++) {
-            for (int rank = 1; rank <= 12; rank++) {
+            this.deck[index] = new Card(0, suit); // initializing zeros
+            for (int rank = 1; rank < 13; rank++) {
                 this.deck[index] = new Card(rank, suit);
-                index++;
+                this.deck[index + 1] = new Card(rank, suit);
+                index += 2;
             }
         }
-        // initialize Wild cards
+        // initialize Wild cards (4 each)
         // wild +4
         for (int i = 0; i < 4; i++) {
-            this.deck[index] = new Card(2, 5); // Wild cards
+            this.deck[index] = new Card(0, 5); // Wild cards
             index++;
         }
         // wild
-        for (int i = 0; i< 2; i++) {
+        for (int i = 0; i < 4; i++) {
             this.deck[index] = new Card(1, 5); // +4 cards
             index++;
         }
@@ -46,15 +48,16 @@ public class Deck {
         }
 
         // sets the appropriate length of the deck excluding NULL values
-        this.deck = new Card[cards.length - nullCount];
+        int arrSize = cards.length - nullCount;
+        this.deck = new Card[arrSize];
 
-        // loads non-null cards from the carrds array into our deck
-        for (int i = 0; i < (cards.length - nullCount); i++) {
+        // loads non-null cards from the cards array into our deck
+        for (int i = 0; i < arrSize; i++) {
             if (cards[i] != null) {
                 this.deck[i] = cards[i];
             }
         }
-        this.totalCards = this.deck.length; //updates the total cards
+        this.totalCards = arrSize; //updates the total cards
         this.shuffle(); // shuffle cards
     }
 
@@ -80,7 +83,13 @@ public class Deck {
             return null;
         } else {
             this.totalCards--; // decrease the number of cards in the deck
-            return this.deck[this.totalCards];
+            Card picked = this.deck[this.totalCards];
+            while (picked == null) {
+                totalCards--;
+                picked = this.deck[this.totalCards];
+                //System.out.println("Drawn card is " + picked);
+            }
+            return picked;
         }
     }
 
@@ -97,7 +106,15 @@ public class Deck {
      * @return -- True if the deck has no cards remaining or False if there are still cards remaining
      */
     public boolean isEmpty() {
-        return this.cardsRemaining() <= 0;
+        if (this.cardsRemaining() <= 0) { // zero or less cards remaining
+            return true;
+        }
+        for (int i = 0; i < this.totalCards; i++) {
+            if (this.deck[i] != null) { // if any cards in the deck are not null then this is false
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -107,7 +124,7 @@ public class Deck {
     public String toString() {
         String builder = "";
         for (int i = 0; i < totalCards; i++) {
-            builder = builder + this.deck[i];
+            builder = builder + this.deck[i] + " ";
         }
         return builder;
     }
