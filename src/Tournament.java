@@ -24,5 +24,8 @@ public class Tournament {
         System.out.println("Random Card AI vs. Biggest Card Ai windrate " + (new UnoWarMatch(rand, b)).playGame(n));
         System.out.println("Random Card AI vs. Attack Card AI winrate " + (new UnoWarMatch(rand, a)).playGame(n));
         System.out.println("Random Card AI vs. MINIMAX AI winrate " + (new UnoWarMatch(rand, minimax)).playGame(n));
+        System.out.println("Attack Card AI vs. MINIMAX AI winrate " + (new UnoWarMatch(a, minimax)).playGame(n));
+        System.out.println("Biggest Card AI vs. MINIMAX AI winrate " + (new UnoWarMatch(b, minimax)).playGame(n));
+        System.out.println("MINIMAX AI vs. Biggest Card AI winrate " + (new UnoWarMatch(minimax, b)).playGame(n));
     }
 }

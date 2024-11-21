@@ -23,7 +23,7 @@ public class UnoWarMatch {
     public double playGame(int nTrials) {
         int wins1 = 0;
         int wins2 = 0;
-        while (wins1 != nTrials && wins2 != nTrials) {
+        while (wins1 + wins2 < nTrials) {
             // Initializes conditions to start a Uno game
             Deck myDeck;
             myDeck = new Deck();
@@ -38,7 +38,8 @@ public class UnoWarMatch {
                 cardPile.getTopCard().setSuit(randSuit);
             }
 
-            boolean ai1Turn = true;
+            boolean ai1Starts = (wins1 + wins2) % 2 == 0;
+            boolean ai1Turn = ai1Starts;
             boolean playAgain = false;
 
             while (!hand1.isEmpty() && !hand2.isEmpty()) {
@@ -79,8 +80,9 @@ public class UnoWarMatch {
                     cardPile.getTopCard().setSuit(randSuit);
                 }
                 //System.out.println("Current Top Card: " + cardPile.getTopCard());
+                GameState state = new GameState(currentHand, target, cardPile, myDeck);
 
-                Card currCard = currentAI.getPlay(currentHand, cardPile); // Card that the AI chooses
+                Card currCard = currentAI.getPlay(state); // Card that the AI chooses
                 if (cardPile.canPlay(currCard)) {
                     // Logic for special cards
                     if (currCard.getSuit() == 5) {
@@ -151,6 +153,6 @@ public class UnoWarMatch {
                 }
             }
         }
-        return (double) wins1 / (double) (wins1 + wins2) * 100;
+        return (double) wins1 / nTrials * 100;
     }
 }

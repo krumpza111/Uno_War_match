@@ -12,7 +12,9 @@ public class AI {
      * @param cardPile -- The card pile being used for the Uno match being played
      * @return -- A card that the AI has chosen, or NULL if no card can be played
      */
-    public Card getPlay (Hand hand, CardPile cardPile) {
+    public Card getPlay (GameState state) {
+        Hand hand = state.currHand;
+        CardPile cardPile = state.cardPile;
         for (int i = 0; i < hand.getSize(); i++) {
             Card currentCard = hand.get(i);
             if (currentCard != null && cardPile.canPlay(currentCard)) {

@@ -9,11 +9,11 @@ public class AttackAI extends AI{
      * The method by which the AI decides on a card to play
      * For the ATTACK AI: cards are chosen if they can be played...
      *  Prefers playing WILD +4 and +2 cards any chance given
-     * @param hand -- The hand of the AI player
-     * @param cardPile -- The card pile being used for the Uno match being played
      * @return -- A card that the AI has chosen, or NULL if no card can be played
      */
-    public Card getPlay(Hand hand, CardPile cardPile) {
+    public Card getPlay(GameState state) {
+        Hand hand = state.getCurrHand();
+        CardPile cardPile = state.getCardPile();
         int bestIndex = -1;
         for (int i = 0; i < hand.getSize(); i++) {
             Card currentCard = hand.get(i);

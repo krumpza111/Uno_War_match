@@ -101,6 +101,10 @@ public class Deck {
         return this.totalCards;
     }
 
+    public Card[] getDeck() {
+        return this.deck;
+    }
+
     /**
      * returns if the deck out of cards
      * @return -- True if the deck has no cards remaining or False if there are still cards remaining

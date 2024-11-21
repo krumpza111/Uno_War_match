@@ -16,15 +16,14 @@ public class MiniMaxAI extends AI {
      * @param cardPile -- The card pile being used for the Uno match being played
      * @return -- A card that the AI has chosen, or NULL if no card can be played
      */
-    public Card getPlay(Hand hand, CardPile cardPile) {
+    public Card getPlay(GameState state) {
+        CardPile cardPile = state.cardPile;
         int bestScore = Integer.MIN_VALUE;
         Card bestCard = null;
-        GameState simulated = new GameState(hand, cardPile);
-        for (int i = 0; i < simulated.getCurrHand().getSize(); i++) {
-            Card cardDrawn = simulated.getCurrHand().get(i);
+        for (int i = 0; i < state.getCurrHand().getSize(); i++) {
+            Card cardDrawn = state.getCurrHand().get(i);
             if (cardPile.canPlay(cardDrawn)) {
-                simulated.simulateOpponent(7);
-                int score = minimax(cardDrawn, simulated, 2, true);
+                int score = minimax(cardDrawn, state, 2, true, Integer.MIN_VALUE, Integer.MAX_VALUE);
                 if (score > bestScore) {
                     bestScore = score;
                     bestCard = cardDrawn;
@@ -43,34 +42,63 @@ public class MiniMaxAI extends AI {
      * @param isMaxPlayer -- Which player is the current player
      * @return -- the MAX of all values in the hand if MaxPlayer, MIN of al values in the hand if not MaxPlayer
      */
-    private int minimax(Card card, GameState state, int depth, boolean isMaxPlayer) {
+    private int minimax(Card card, GameState state, int depth, boolean isMaxPlayer, int alpha, int beta) {
         if (depth == 0 || state.getCurrHand().getSize() == 0) {
-            return evaluateCard(card);
+            return evaluateCard(card, state);
         }
+        GameState stateCopy = new GameState(state.getCurrHand(), state.getOpponentHand(), state.getCardPile(), state.getDeck());
 
         if (isMaxPlayer) {
             int maxEval = Integer.MIN_VALUE;
-            for (int i = 0; i < state.getCurrHand().getSize(); i++) {
-                Card playCard = state.getCurrHand().get(i);
-                if (state.getCardPile().canPlay(playCard)) {
-                    state.getCardPile().setTopCard(playCard);
-                    state.getCurrHand().remove(i);
-                    int eval = minimax(state.currHand.get(i), state, depth - 1, false);
+            Hand tempHand = stateCopy.getCurrHand();
+            boolean hasPlayableCard = false;
+            for (int i = 0; i < tempHand.getSize(); i++) {
+                Card playCard = tempHand.get(i);
+                if (stateCopy.getCardPile().canPlay(playCard)) {
+                    hasPlayableCard = true;
+                    if ( (playCard.getSuit() == 5 && playCard.getRankNum() == 1)) {
+                        stateCopy.playPlusFour(!isMaxPlayer);
+                    } else if (playCard.getRankNum() == 10) {
+                        stateCopy.playPlusTwo(!isMaxPlayer);
+                    }
+                    stateCopy.getCardPile().setTopCard(playCard);
+                    stateCopy.getCurrHand().remove(i);
+                    int eval = minimax(playCard, stateCopy, depth - 1, false, alpha, beta);
                     maxEval = Math.max(maxEval, eval);
+                    alpha = Math.max(alpha, maxEval);
+                    if (beta <= alpha) {
+                        break;
+                    }
                 }
+            }
+            if (!hasPlayableCard) {
+                stateCopy.draw(!isMaxPlayer);
             }
             return maxEval;
         } else {
             int minEval = Integer.MAX_VALUE;
-            Hand tempHand = state.getOpponentHand();
+            Hand tempHand = stateCopy.getOpponentHand();
+            boolean hasPlayableCard = false;
             for (int i = 0; i < tempHand.getSize(); i++) {
                 Card playCard = tempHand.get(i);
-                if (state.getCardPile().canPlay(playCard)) {
-                    state.getCardPile().setTopCard(playCard);
-                    state.getOpponentHand().remove(i);
-                    int eval = minimax(tempHand.get(i), state, depth - 1, true);
+                if (stateCopy.getCardPile().canPlay(playCard)) {
+                    if ( (playCard.getSuit() == 5 && playCard.getRankNum() == 1)) {
+                        stateCopy.playPlusFour(!isMaxPlayer);
+                    } else if (playCard.getRankNum() == 10) {
+                        stateCopy.playPlusTwo(!isMaxPlayer);
+                    }
+                    stateCopy.getCardPile().setTopCard(playCard);
+                    stateCopy.getOpponentHand().remove(i);
+                    int eval = minimax(playCard, stateCopy, depth - 1, true, alpha, beta);
                     minEval = Math.min(minEval, eval);
+                    beta = Math.min(beta, minEval);
+                    if (beta <= alpha) {
+                        break;
+                    }
                 }
+            }
+            if (!hasPlayableCard) {
+                stateCopy.draw(!isMaxPlayer);
             }
             return minEval;
         }
@@ -81,22 +109,27 @@ public class MiniMaxAI extends AI {
      * @param card -- Card we are checking for
      * @return -- A score or grade of the card
      */
-    private int evaluateCard (Card card) {
+    private int evaluateCard (Card card, GameState state) {
         if (card == null) {
             return 0;
         }
 
+        int score = 0;
+
         if (card.getSuitName().equals("Wild")) {
             if (card.getRankNum() == 1) {
-                return WILD_CARD_BONUS;
+                score += WILD_CARD_BONUS;
+            } else {
+                score += WILD_CARD_BONUS - 10;
             }
-            return WILD_CARD_BONUS - 10;
         }
-        return switch (card.getRankNum()) {
+        score += switch (card.getRankNum()) {
             case 10 -> DRAW_TWO_BONUS;
             case 11, 12 -> SKIP_REVERSE_BONUS;
             default -> NUMBER_CARD_BASE + card.getRankNum();
         };
+
+        return score;
     }
 
     @Override

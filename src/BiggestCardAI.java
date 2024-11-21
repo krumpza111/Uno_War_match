@@ -10,11 +10,11 @@ public class BiggestCardAI extends AI{
      * For the BIGGEST AI: cards are chosen if they can be played...
      *  if there are multiple options of a Card to play the AI will choose the card with the highest rank
      *  This will include Reverse -> skip -> +2 -> Nine
-     * @param hand -- The hand of the AI player
-     * @param cardPile -- The card pile being used for the Uno match being played
      * @return -- A card that the AI has chosen, or NULL if no card can be played
      */
-    public Card getPlay(Hand hand, CardPile cardPile) {
+    public Card getPlay(GameState state) {
+        Hand hand = state.getCurrHand();
+        CardPile cardPile = state.getCardPile();
         Card biggest = null;
 
         for (int i = 0; i < hand.getSize(); i++) {
